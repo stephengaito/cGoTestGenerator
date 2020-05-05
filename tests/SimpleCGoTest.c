@@ -1,31 +1,45 @@
 // A simple cGoTest 
 
+#include "_cgo_export.h"
+#include "testsCGoTests.h"
+#include "cGoTests.h"
+
 /// \testFixture testFixture A test fixture
 
-/// \testFixture sillyFixture A very silly fixture
-
-/// \brief Test the JBlock utilities
-/// \silly This is a silly comment
+/// \brief Setup the testFixture
+/// \inFixture testFixture
 ///
-/// \inFixture sillyFixture
-///
-char *newJBlockCGoTest(void* data) {
-  JBlock *aJBlock = newJBlock(100, 2);
-  
-  cTest_NotNil_MayFail("aJBlock nil", aJBlock);
-  cTest_UIntEquals("wrong aJBlock.size", aJBlock->size, (size_t)(100*2));
-  
-  return 0;
+void *testFixtureCGoTestSetup(void) {
+  return NULL;
 }
 
-/// \brief Test the RM64 utilities
+/// \brief Tear down the testFixture
+/// \inFixture testFixture
+///
+void testFixtureCGoTestTeardown(void *data) {
+  // do nothing
+}
+
+/// \brief Test the cGoTest pointer assertions
 ///
 /// \inFixture testFixture
 ///
-char *newJRM64CGoTest(void* data) {
-  JRM64 *aRegisterMachine = newJRM64();
+char *pointerCGoTest(void* data) {
+  cGoTest_NotNil_MayFail("a pointer is not nil", pointerCGoTest);
+  cGoTest_Nil("a pointer is nil", NULL);
   
-  cTest_NotNil_MayFail("aRegisterMachine nil", aRegisterMachine);
+  cGoTest_NotNil_MayFail("data is nil so SHOULD fail", data);
+
+  return NULL;
+}
+
+/// \brief Test the UInt assertions
+///
+/// \inFixture testFixture
+///
+char *uintCGoTest(void* data) {
+  cGoTest_UIntEquals("two uints are equal", 42, 42);
+  cGoTest_UIntNotEquals("two uints are not equal", 42, 2);
   
-  return 0;
+  return NULL;
 }

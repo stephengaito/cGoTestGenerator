@@ -1,3 +1,7 @@
+*.swp
+cDocs
+templates.go
+
 # Binaries for programs and plugins
 *.exe
 *.exe~

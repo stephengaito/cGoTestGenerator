@@ -43,7 +43,7 @@ which occurs over more than one line will not be recognized.
 ## Typical use:
  
 ```
-     //go:generate cGoTestGenerator
+     //go:generate cGoTestGenerator <packageName> <packageDesc>
  ```
  
 Will run the cGoTestGenerator on any files ending in "CGotTest.c" in the 
@@ -63,7 +63,10 @@ meant to work with Doxygen as embedded commands. To do this you need to
 add the following to your Doxyfile: 
 
 ```
-ALIASES += ......
+ALIASES += testSuite="\par Suite:\n"
+ALIASES += inSuite="\par Suite:\n"
+ALIASES += testFixture="\par Fixture:\n"
+ALIASES += inFixture="\par Fixture:\n"
 ```
 
 (See [Doxygen Custon 
