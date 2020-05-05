@@ -1,6 +1,12 @@
 /// \file
 /// \brief This ANSI-C Header file provides the ANSI-C based cGoTest testing 
 /// framework. 
+///
+/// Package description:
+///   {{ .BriefDesc }}
+///
+/// This file is automatically (re)generated changes made to this file will 
+/// be lost. 
 
 #ifndef CGO_TESTS_H
 #define CGO_TESTS_H
@@ -8,10 +14,6 @@
 #include <stdio.h>
 #include <string.h>
 #include <memory.h>
-
-#ifndef NULL
-#define NULL 0
-#endif
 
 /// \brief Log a message to the GoLang testing systems using sprintf. 
 ///

@@ -1,10 +1,13 @@
 // This GoLang file provides a standard GoLang interface to the underlying 
 // ANSI-C cGoTest framework for the {{ .Name }} GoLang Package. 
-
-package {{ .Name }}
 //
 // Package description:
 //   {{ .BriefDesc }}
+//
+// This file is automatically (re)generated changes made to this file will 
+// be lost. 
+
+package {{ .Name }}
 
 // #include "{{ .Name }}CGoTests.h"
 import "C"

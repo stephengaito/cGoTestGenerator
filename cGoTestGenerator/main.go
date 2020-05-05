@@ -104,6 +104,7 @@ func processTestFile(testFile string) error {
   scanner := bufio.NewScanner(file)
   for scanner.Scan() {
     text := scanner.Text()
+
     matches := briefDesc.FindStringSubmatch(text)
     if matches != nil {
       curBriefDesc = matches[1]
@@ -240,14 +241,14 @@ func main() {
   // Walk through all of the "CGoTest" files ...
   // ... building up the testSuites structure
   //
+  cGoTestRegExp := regexp.MustCompile("CGoTests?\\.c$")
   err := filepath.Walk(".", func(path string, info os.FileInfo, err error) error {
     if err != nil {
       return err
     }
-    if ! strings.HasSuffix(path, "CGoTest.c") {
-      return nil
+    if cGoTestRegExp.MatchString(path) {
+      processTestFile(path)
     }
-    processTestFile(path)
     return nil
   })
   if err != nil {
@@ -256,6 +257,7 @@ func main() {
   
   // Now create the required cGoTest files
   //
+  createFileFrom("cGoTestsUtils.c",                  "/templates/cGoTestsUtils.c")
   createFileFrom("cGoTests.h",                       "/templates/cGoTests.h")
   createFileFrom("cGoTests.go",                      "/templates/cGoTests.go")
   createFileFrom(testRunner.Name+"CGoTests.h",       "/templates/packageCGoTests.h")

@@ -1,4 +1,4 @@
-// A simple cGoTest 
+// A simple cGoTest
 
 #include "_cgo_export.h"
 #include "testsCGoTests.h"

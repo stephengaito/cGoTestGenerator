@@ -56,11 +56,23 @@ We use Matt Jibson's '[mjibson/esc](https://github.com/mjibson/esc) to
 embed all "static" ANSI-C code files required by the cGoTests into the 
 single cGoTestGenerator binary.
 
+## Gitignore
+
+The automatically generated files satisfy the following `.gitignore` 
+patterns:
+
+```
+*GoTests.go
+*GoTests_test.go
+*GoTests.h
+*GoTestsUtils.h
+```
+
 ## Doxygen
 
-The `\inFixture`, `\testFixture`, `\inSuite`, and `\testSuite` markers are 
-meant to work with Doxygen as embedded commands. To do this you need to 
-add the following to your Doxyfile: 
+The `\testSuite`, `\inSuite`, `\testFixture`, and `\inFixture` markers are 
+all meant to work with Doxygen as embedded commands. To do this you need to 
+add the following to your Doxyfile:
 
 ```
 ALIASES += testSuite="\par Suite:\n"

@@ -5,10 +5,13 @@
 // ... unfortunately `go test` forbids the use of cgo...
 // ... so we need to maintain this addition level of code indirection.
 //
-package {{ .Name }}
-//
 // Package description:
 //   {{ .BriefDesc }}
+//
+// This file is automatically (re)generated changes made to this file will 
+// be lost. 
+//
+package {{ .Name }}
 
 // #include "{{ .Name }}CGoTests.h"
 import "C"
@@ -32,9 +35,15 @@ import (
       
       cGoTestStart("{{ .Name }}", "{{ .BriefDesc }}")
       defer cGoTestFinish("{{ .Name }}")
-     
+
+{{       if $theFixture.SetupName }}     
       data := C.{{ $theFixture.SetupName}}()
+{{       else }}
+      data := C.nullSetup()
+{{       end }}
+{{       if $theFixture.TeardownName }}     
       defer C.{{ $theFixture.TeardownName}}(data)
+{{       end }}
       
       return cGoTestPossibleError(C.{{ .Name }}(data))
     }

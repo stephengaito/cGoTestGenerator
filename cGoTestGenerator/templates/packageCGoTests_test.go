@@ -1,9 +1,12 @@
 // GoLang level tests for the {{ .Name }} ANSI-C code
-
-package {{ .Name }}
 //
 // Package description:
 //   {{ .BriefDesc }}
+//
+// This file is automatically (re)generated changes made to this file will 
+// be lost. 
+
+package {{ .Name }}
 
 import (
   "testing"

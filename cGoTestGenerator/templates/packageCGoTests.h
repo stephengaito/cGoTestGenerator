@@ -4,9 +4,18 @@
 ///
 /// Package description:
 ///   {{ .BriefDesc }}
+///
+/// This file is automatically (re)generated changes made to this file will 
+/// be lost. 
 
 #ifndef {{ .Name }}_CGO_TESTS_H
 #define {{ .Name }}_CGO_TESTS_H
+
+#ifndef NULL
+#define NULL 0
+#endif
+
+extern void *nullSetup(void);
 
 {{ range .Suites }}
 // begin suite: {{ .Name }}
