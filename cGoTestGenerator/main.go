@@ -179,7 +179,7 @@ func processTestFile(testFile string) error {
   return nil
 }
 
-func createFileFrom(filePath, templatePath string) {
+func createFileFrom(filePath, templatePath string, fileMode os.FileMode) {
   fmt.Printf("\ncreating   file: [%s]\n", filePath)
   fmt.Printf("  from template: [%s]\n", templatePath)
   
@@ -210,6 +210,8 @@ func createFileFrom(filePath, templatePath string) {
     )
     os.Exit(-1)
   }
+  defer aFile.Close()
+  
   err = aTemplate.Execute(aFile, testRunner)
   if err != nil {
     fmt.Printf(
@@ -217,6 +219,16 @@ func createFileFrom(filePath, templatePath string) {
       templatePath,
       filePath,
       err,
+    )
+    os.Exit(-1)
+  }
+  
+  err = aFile.Chmod(fileMode)
+  if err != nil {
+    fmt.Printf(
+      "Could not change the mode of [%s] to [%o]\n",
+      filePath,
+      fileMode,
     )
     os.Exit(-1)
   }
@@ -257,12 +269,13 @@ func main() {
   
   // Now create the required cGoTest files
   //
-  createFileFrom("cGoTestsUtils.c",                  "/templates/cGoTestsUtils.c")
-  createFileFrom("cGoTests.h",                       "/templates/cGoTests.h")
-  createFileFrom("cGoTests.go",                      "/templates/cGoTests.go")
-  createFileFrom(testRunner.Name+"CGoTests.h",       "/templates/packageCGoTests.h")
-  createFileFrom(testRunner.Name+"CGoTests.go",      "/templates/packageCGoTests.go")
-  createFileFrom(testRunner.Name+"CGoTests_test.go", "/templates/packageCGoTests_test.go")
+  createFileFrom("cGoTestsUtils.c",                  "/templates/cGoTestsUtils.c",         0644)
+  createFileFrom("cGoTests.h",                       "/templates/cGoTests.h",              0644)
+  createFileFrom("cGoTests.go",                      "/templates/cGoTests.go",             0644)
+  createFileFrom(testRunner.Name+"CGoTests.h",       "/templates/packageCGoTests.h",       0644)
+  createFileFrom(testRunner.Name+"CGoTests.go",      "/templates/packageCGoTests.go",      0644)
+  createFileFrom(testRunner.Name+"CGoTests_test.go", "/templates/packageCGoTests_test.go", 0644)
+  createFileFrom("runCGoTests",                      "/templates/runCGoTests",             0755)
 
   fmt.Printf("\n")
 }

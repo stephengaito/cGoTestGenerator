@@ -1,3 +1,5 @@
+// +build cGoTests
+
 /// \file
 /// \brief This ANSI-C Header file provides the ANSI-C based cTest testing 
 /// framework for the {{ .Name }} GoLang Package. 

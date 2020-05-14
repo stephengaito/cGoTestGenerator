@@ -1,3 +1,5 @@
+// +build cGoTests
+
 // GoLang level tests for the {{ .Name }} ANSI-C code
 //
 // Package description:

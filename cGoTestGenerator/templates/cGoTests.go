@@ -1,3 +1,5 @@
+// +build cGoTests
+
 // This GoLang file provides a standard GoLang interface to the underlying 
 // ANSI-C cGoTest framework for the {{ .Name }} GoLang Package. 
 //

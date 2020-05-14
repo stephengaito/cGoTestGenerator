@@ -1,3 +1,5 @@
+// +build cGoTests
+
 /// \file
 /// \brief This ANSI-C Header file provides the ANSI-C based cGoTest testing 
 /// framework. 
