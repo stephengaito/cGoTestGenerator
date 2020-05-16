@@ -47,16 +47,30 @@ if (!(test)) return message
 /// \brief Assert that `aPtr` is not nil. Log a message if `aPtr` is nil. 
 /// Capture the calling line and file. 
 ///
+#define cGoTest_NotNil(message, aPtr) \
+cGoTest_NotNil_LineFile(message, aPtr, __LINE__, __FILE__)
+
+/// \brief Assert that `aPtr` is not nil. Log a message if `aPtr` is nil. 
+///
+#define cGoTest_NotNil_LineFile(message, aPtr, aLine, aFile)  \
+if ((aPtr) == 0) {                                            \
+  cGoTestLog(message);                                        \
+  cGoTestLogLineFile(aLine, aFile);                           \
+}
+
+/// \brief Assert that `aPtr` is not nil. Log a message if `aPtr` is nil. 
+/// Capture the calling line and file. 
+///
 #define cGoTest_NotNil_MayFail(message, aPtr) \
 cGoTest_NotNil_MayFail_LineFile(message, aPtr, __LINE__, __FILE__)
 
 /// \brief Assert that `aPtr` is not nil. Log a message if `aPtr` is nil. 
 ///
-#define cGoTest_NotNil_MayFail_LineFile(message, aPtr, aLine, aFile)  \
-if ((aPtr) == 0) {                                                  \
-  cGoTestLog(message);                                                \
-  cGoTestLogLineFile(aLine, aFile);                                   \
-  return message;                                                   \
+#define cGoTest_NotNil_MayFail_LineFile(message, aPtr, aLine, aFile) \
+if ((aPtr) == 0) {                                                   \
+  cGoTestLog(message);                                               \
+  cGoTestLogLineFile(aLine, aFile);                                  \
+  return message;                                                    \
 }
 
 /// \brief Assert that `aPtr` is nil. Log a message if `aPtr` is not nil. 
@@ -85,10 +99,10 @@ cGoTest_UIntEquals_LineFile(message, aUInt, bUInt, __LINE__, __FILE__)
 /// equal. 
 ///
 #define cGoTest_UIntEquals_LineFile(message, aUInt, bUInt, aLine, aFile)  \
-if ((aUInt) != (bUInt)) {                                               \
+if ((aUInt) != (bUInt)) {                                                 \
   cGoTestLog(message);                                                    \
-  cGoTestLogf("  aUInt: %lu", ((cGoUInt)aUInt));                                     \
-  cGoTestLogf("  bUInt: %lu", ((cGoUInt)bUInt));                                     \
+  cGoTestLogf("  aUInt: %lu", ((cGoUInt)aUInt));                          \
+  cGoTestLogf("  bUInt: %lu", ((cGoUInt)bUInt));                          \
   cGoTestLogLineFile(aLine, aFile);                                       \
 }
 
@@ -102,10 +116,81 @@ cGoTest_UIntNotEquals_LineFile(message, aUInt, bUInt, __LINE__, __FILE__)
 /// equal. 
 ///
 #define cGoTest_UIntNotEquals_LineFile(message, aUInt, bUInt, aLine, aFile)  \
-if ((aUInt) == (bUInt)) {                                               \
-  cGoTestLog(message);                                                    \
-  cGoTestLogf("  aUInt: %lu", ((cGoUInt)aUInt));                                     \
-  cGoTestLogf("  bUInt: %lu", ((cGoUInt)bUInt));                                     \
-  cGoTestLogLineFile(aLine, aFile);                                       \
+if ((aUInt) == (bUInt)) {                                                    \
+  cGoTestLog(message);                                                       \
+  cGoTestLogf("  aUInt: %lu", ((cGoUInt)aUInt));                             \
+  cGoTestLogf("  bUInt: %lu", ((cGoUInt)bUInt));                             \
+  cGoTestLogLineFile(aLine, aFile);                                          \
 }
+
+#define cGoStr const char*
+
+/// \brief Assert that `theStr` contains `aWord`. Log a message if 
+/// `theStr` does not contain `aWord`. 
+///
+#define cGoTest_StrContains(message, theStr, aWord)                     \
+cGoTest_StrContains_LineFile(message, theStr, aWord, __LINE__, __FILE__)
+
+/// \brief Assert that `theStr` contains `aWord`. Log a message if 
+/// `theStr` does not contain `aWord`. 
+///
+#define cGoTest_StrContains_LineFile(message, theStr, aWord, aLine, aFile) \
+if (strstr((theStr), (aWord)) == NULL) {                                           \
+  cGoTestLog(message);                                                     \
+  cGoTestLogf("  theStr: %s", ((cGoStr)theStr));                           \
+  cGoTestLogf("   aWord: %s", ((cGoStr)aWord));                            \
+  cGoTestLogLineFile(aLine, aFile);                                        \
+}
+
+/// \brief Assert that `theStr` does not contain the `aWord`. Log a 
+/// message if `theStr` does contain the `aWord`. 
+///
+#define cGoTest_StrNotContains(message, theStr, aWord)                     \
+cGoTest_StrNotContains_LineFile(message, theStr, aWord, __LINE__, __FILE__)
+
+/// \brief Assert that `theStr` does not contain the `aWord`. Log a 
+/// message if `theStr` does contain the `aWord`. 
+///
+#define cGoTest_StrNotContains_LineFile(message, theStr, aWord, aLine, aFile) \
+if (strstr((theStr), (aWord)) != NULL) {                                           \
+  cGoTestLog(message);                                                     \
+  cGoTestLogf("  theStr: %s", ((cGoStr)theStr));                           \
+  cGoTestLogf("   aWord: %s", ((cGoStr)aWord));                            \
+  cGoTestLogLineFile(aLine, aFile);                                        \
+}
+
+/// \brief Assert that `aStr` equals `bStr`. Log a message if they 
+/// are not equal. 
+///
+#define cGoTest_StrEquals(message, aStr, bStr)                       \
+cGoTest_StrEquals_LineFile(message, aStr, bStr, __LINE__, __FILE__)
+
+/// \brief Assert that `aStr` equals `bStr`. Log a message if they 
+/// are not equal. 
+///
+#define cGoTest_StrEquals_LineFile(message, aStr, bStr, aLine, aFile) \
+if (strcmp((aStr), (bStr)) != 0) {                                    \
+  cGoTestLog(message);                                                \
+  cGoTestLogf("  aStr: %s", ((cGoStr)aStr));                          \
+  cGoTestLogf("  bStr: %s", ((cGoStr)bStr));                          \
+  cGoTestLogLineFile(aLine, aFile);                                   \
+}
+
+/// \brief Assert that `aStr` does not equal `bStr`. Log a message if they 
+/// are equal. 
+///
+#define cGoTest_StrNotEquals(message, aStr, bStr)                       \
+cGoTest_StrNotEquals_LineFile(message, aStr, bStr, __LINE__, __FILE__)
+
+/// \brief Assert that `aStr` does not equal `bStr`. Log a message if they 
+/// are equal. 
+///
+#define cGoTest_StrNotEquals_LineFile(message, aStr, bStr, aLine, aFile) \
+if (strcmp((aStr), (bStr)) == 0) {                                       \
+  cGoTestLog(message);                                                   \
+  cGoTestLogf("  aStr: %s", ((cGoStr)aStr));                             \
+  cGoTestLogf("  bStr: %s", ((cGoStr)bStr));                             \
+  cGoTestLogLineFile(aLine, aFile);                                      \
+}
+
 #endif

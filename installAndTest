@@ -1,0 +1,30 @@
+#!/bin/bash
+
+# This bash script installs and then tests the cGoTestGenerator
+
+echo ""
+echo "----------------------------------------------------------------"
+echo "Installing cGoTestGenerator"
+echo "----------------------------------------------------------------"
+echo ""
+pushd cGoTestGenerator
+
+go generate
+go install
+
+popd 
+
+echo ""
+echo "----------------------------------------------------------------"
+echo "Testing cGoTestGeneartor"
+echo "----------------------------------------------------------------"
+echo ""
+
+pushd tests
+
+go generate
+go test -tags cGoTests
+
+popd
+
+echo ""

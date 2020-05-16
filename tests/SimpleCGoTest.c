@@ -1,3 +1,5 @@
+// +build cGoTests
+
 // A simple cGoTest
 
 #include "_cgo_export.h"
@@ -40,6 +42,28 @@ char *pointerCGoTest(void* data) {
 char *uintCGoTest(void* data) {
   cGoTest_UIntEquals("two uints are equal", 42, 42);
   cGoTest_UIntNotEquals("two uints are not equal", 42, 2);
+  
+  return NULL;
+}
+
+char *strCGoTest(void* data) {
+  cGoTest_StrContains(
+    "Should contain word",
+    "This is a test", "test"
+  );
+  cGoTest_StrNotContains(
+    "Should not contain word",
+    "This is a test", "contain"
+  );
+
+  cGoTest_StrEquals(
+    "Strings should be equal",
+    "This is a test", "This is a test"
+  );
+  cGoTest_StrNotEquals(
+    "Strings should not be equal",
+    "This is a test", "this is a second test"
+  );
   
   return NULL;
 }
