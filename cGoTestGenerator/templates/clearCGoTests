@@ -1,0 +1,12 @@
+#!/bin/bash
+
+# This bash script clears out all cGoTests in the current directory
+
+reset
+
+echo "------------------------------------------------------------"
+echo "clearing all cGoTests"
+echo "------------------------------------------------------------"
+cGoTestGenerator -c {{ .Name }}
+echo "------------------------------------------------------------"
+echo ""

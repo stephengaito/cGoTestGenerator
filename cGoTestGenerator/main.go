@@ -7,8 +7,11 @@ package main
 
 import (
   "bufio"
+  "flag"
   "fmt"
+  "io/ioutil"
   "os"
+  paths "path"
   "path/filepath"
   "regexp"
   "strings"
@@ -234,22 +237,7 @@ func createFileFrom(filePath, templatePath string, fileMode os.FileMode) {
   }
 }
 
-func main() {
-
-  // setup the default test suites
-  //
-  packageName := "main"
-  if 1 < len(os.Args) { packageName = os.Args[1] }
-  //
-  packageDesc := "Main package"
-  if 2 < len(os.Args) { packageDesc = strings.Join(os.Args[2:], " ") }
-  //
-  testRunner = newTestRunner(packageName, packageDesc)
-  testRunner.Suites["main"] = newTestSuite("main", "Main (default) TestSuite")
-  testRunner.Suites["main"].Fixtures["main"] =
-    newTestFixture("main", "Main (default) Fixture in Main Suite")
-  fmt.Printf("package: [%s] (%s)\n", packageName, packageDesc)
-  
+func createCGoTestFiles() {
   // Walk through all of the "CGoTest" files ...
   // ... building up the testSuites structure
   //
@@ -260,6 +248,10 @@ func main() {
     }
     if cGoTestRegExp.MatchString(path) {
       processTestFile(path)
+      fileContents, err := ioutil.ReadFile(path)
+      if err == nil {
+        ioutil.WriteFile(paths.Base(path), fileContents, 0644)
+      }
     }
     return nil
   })
@@ -276,6 +268,109 @@ func main() {
   createFileFrom(testRunner.Name+"CGoTests.go",      "/templates/packageCGoTests.go",      0644)
   createFileFrom(testRunner.Name+"CGoTests_test.go", "/templates/packageCGoTests_test.go", 0644)
   createFileFrom("runCGoTests",                      "/templates/runCGoTests",             0755)
+  createFileFrom("clearCGoTests",                    "/templates/clearCGoTests",           0755)
 
   fmt.Printf("\n")
+}
+
+func clearAllCGoTestFiles() {
+  // Walk through all of the "CGoTest" files ...
+  // ... building up the testSuites structure
+  //
+  cGoTestRegExp := regexp.MustCompile("CGoTests?\\.c$")
+  err := filepath.Walk("cGoTests", func(path string, info os.FileInfo, err error) error {
+    if err != nil {
+      return err
+    }
+    if cGoTestRegExp.MatchString(path) {
+      //fmt.Printf("will remove %s\n", paths.Base(path))
+      os.Remove(paths.Base(path))
+    }
+    return nil
+  })
+  if err != nil {
+    fmt.Printf("error: %v", )
+  }
+  
+  // Now create the required cGoTest files
+  //
+  os.Remove("cGoTestsUtils.c")
+  os.Remove("cGoTests.h")
+  os.Remove("cGoTests.go")
+  os.Remove(testRunner.Name+"CGoTests.h")
+  os.Remove(testRunner.Name+"CGoTests.go")
+  os.Remove(testRunner.Name+"CGoTests_test.go")
+  os.Remove("runCGoTests")
+  os.Remove("clearCGoTests")
+
+  fmt.Printf("\n")
+}
+
+func showUsage() {
+  fmt.Printf(
+    "\n%s usage: [options] [<packageName>] [<packageDescription]\n\n",
+    os.Args[0],
+  )
+  flag.PrintDefaults()
+  fmt.Printf(
+    "  <packageName>\n\tIs the name to use in all automatically generated package statements.\n",
+  )
+  fmt.Printf(
+    "  <packageDescription>\n\tIs a brief description to use in all automatically generated files.\n",
+  )
+  fmt.Printf(
+    "\nBoth <packageName> and <packageDescrption> are optional.\n\n",
+  )
+  fmt.Printf(
+    "<packageDescription> can have embedded spaces and continues to the end\n",
+  )
+  fmt.Printf("of the command line.\n\n")
+  fmt.Printf("The original *cGoTest.c files MUST be in the cGoTests subdirectory.\n\n")
+  fmt.Printf("Any *cGoTest.c files in the root directory WILL BE DELETED by the -clear option.\n\n")
+  os.Exit(0)
+}
+
+func main() {
+
+  const (
+    clearCGoTestFilesUsage   = "Remove all automatically generated cGoTest files."
+    clearCGoTestFilesDefault = false
+    showHelpUsage            = "Show this help text."
+    showHelpDefault          = false
+  )
+
+  clearCGoTestFiles := false
+  showHelp          := false
+
+  flag.BoolVar(&clearCGoTestFiles, "clear",
+    clearCGoTestFilesDefault, clearCGoTestFilesUsage)
+  flag.BoolVar(&clearCGoTestFiles, "c",
+    clearCGoTestFilesDefault, clearCGoTestFilesUsage)
+  flag.BoolVar(&showHelp, "help", showHelpDefault, showHelpUsage)
+  flag.BoolVar(&showHelp, "h", showHelpDefault, showHelpUsage)
+  
+  flag.Parse()
+  flagArgs := flag.Args()
+  
+  if showHelp { showUsage() }
+  
+  // setup the default test suites
+  //
+  packageName := "main"
+  if flag.Arg(0) != "" { packageName = flagArgs[0] }
+  //
+  packageDesc := "Main package"
+  if flag.Arg(1) != "" { packageDesc = strings.Join(flagArgs[1:], " ") }
+  //
+  testRunner = newTestRunner(packageName, packageDesc)
+  testRunner.Suites["main"] = newTestSuite("main", "Main (default) TestSuite")
+  testRunner.Suites["main"].Fixtures["main"] =
+    newTestFixture("main", "Main (default) Fixture in Main Suite")
+  fmt.Printf("package: [%s] (%s)\n", packageName, packageDesc)
+
+  if clearCGoTestFiles {
+    clearAllCGoTestFiles()
+  } else {
+    createCGoTestFiles()
+  }
 }

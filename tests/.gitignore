@@ -3,3 +3,4 @@
 *GoTests.h
 *GoTestsUtils.c
 runCGoTests
+clearCGoTests
