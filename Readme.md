@@ -56,6 +56,12 @@ We use Matt Jibson's '[mjibson/esc](https://github.com/mjibson/esc) to
 embed all "static" ANSI-C code files required by the cGoTests into the 
 single cGoTestGenerator binary.
 
+To install `esc` type:
+
+```
+go get -u github.com/mjibson/esc
+```
+
 ## Gitignore
 
 The automatically generated files satisfy the following `.gitignore` 
